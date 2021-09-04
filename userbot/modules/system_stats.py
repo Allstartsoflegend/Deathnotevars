@@ -3,34 +3,32 @@
 # Licensed under the Raphielscape Public License, Version 1.d (the "License");
 # you may not use this file except in compliance with the License.
 #
+""" Userbot module for getting information about the server. """
+
 
 import asyncio
+from asyncio import create_subprocess_exec as asyncrunapp
+from asyncio.subprocess import PIPE as asyncPIPE
+from platform import python_version, uname
+from shutil import which
+from os import remove
+from telethon import version
+from telethon import __version__, version
 import platform
 import sys
 import time
-from asyncio import create_subprocess_exec as asyncrunapp
-from asyncio.subprocess import PIPE as asyncPIPE
 from datetime import datetime
-from os import remove
-from platform import python_version, uname
-from shutil import which
-
 import psutil
-from telethon import __version__, version
 
-from userbot import (
-    ALIVE_LOGO,
-    ALIVE_NAME,
-    CMD_HELP,
-    UPSTREAM_REPO_BRANCH,
-    StartTime,
-    bot,
-)
-from userbot.events import register
+from userbot import ALIVE_LOGO, ALIVE_NAME, BOT_VER, CMD_HELP, StartTime, UPSTREAM_REPO_BRANCH, bot
+from userbot.events import geezbot_cmd
+from userbot import CUSTOM_CMD as geez
+
 
 # ================= CONSTANT =================
 DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else uname().node
 # ============================================
+
 
 modules = CMD_HELP
 
@@ -43,7 +41,9 @@ async def get_readable_time(seconds: int) -> str:
 
     while count < 4:
         count += 1
-        remainder, result = divmod(seconds, 60) if count < 3 else divmod(seconds, 24)
+        remainder, result = divmod(
+            seconds, 60) if count < 3 else divmod(
+            seconds, 24)
         if seconds == 0 and remainder == 0:
             break
         time_list.append(int(result))
@@ -60,7 +60,7 @@ async def get_readable_time(seconds: int) -> str:
     return up_time
 
 
-@register(outgoing=True, pattern=r"^\.spc")
+@bot.on(geezbot_cmd(outgoing=True, pattern=r"spc"))
 async def psu(event):
     uname = platform.uname()
     softw = "**System Information**\n"
@@ -74,8 +74,10 @@ async def psu(event):
     softw += f"`Boot Time: {bt.day}/{bt.month}/{bt.year}  {bt.hour}:{bt.minute}:{bt.second}`\n"
     # CPU Cores
     cpuu = "**CPU Info**\n"
-    cpuu += "`Physical cores   : " + str(psutil.cpu_count(logical=False)) + "`\n"
-    cpuu += "`Total cores      : " + str(psutil.cpu_count(logical=True)) + "`\n"
+    cpuu += "`Physical cores   : " + \
+        str(psutil.cpu_count(logical=False)) + "`\n"
+    cpuu += "`Total cores      : " + \
+        str(psutil.cpu_count(logical=True)) + "`\n"
     # CPU frequencies
     cpufreq = psutil.cpu_freq()
     cpuu += f"`Max Frequency    : {cpufreq.max:.2f}Mhz`\n"
@@ -116,7 +118,7 @@ def get_size(bytes, suffix="B"):
         bytes /= factor
 
 
-@register(outgoing=True, pattern=r"^\.sysd$")
+@bot.on(geezbot_cmd(outgoing=True, pattern=r"sysd$"))
 async def sysdetails(sysd):
     if not sysd.text[0].isalpha() and sysd.text[0] not in ("/", "#", "@", "!"):
         try:
@@ -128,14 +130,15 @@ async def sysdetails(sysd):
             )
 
             stdout, stderr = await fetch.communicate()
-            result = str(stdout.decode().strip()) + str(stderr.decode().strip())
+            result = str(stdout.decode().strip()) + \
+                str(stderr.decode().strip())
 
             await sysd.edit("`" + result + "`")
         except FileNotFoundError:
             await sysd.edit("`Install neofetch first !!`")
 
 
-@register(outgoing=True, pattern=r"^\.botver$")
+@bot.on(geezbot_cmd(outgoing=True, pattern=r"botver$"))
 async def bot_ver(event):
     if event.text[0].isalpha() or event.text[0] in ("/", "#", "@", "!"):
         return
@@ -163,7 +166,13 @@ async def bot_ver(event):
         revout = str(stdout.decode().strip()) + str(stderr.decode().strip())
 
         await event.edit(
-            "`Userbot Version: " f"{verout}" "` \n" "`Revision: " f"{revout}" "`"
+            "`╭━━━━━━━━━━━━━━━━━━━━╮\n "
+            "` Userbot Version: \n "
+            f"{verout}"
+            "` \n"
+            "   Revision: "
+            f"{revout}🇲🇨\n"
+            "╰━━━━━━━━━━━━━━━━━━━━╯ "
         )
     else:
         await event.edit(
@@ -171,7 +180,7 @@ async def bot_ver(event):
         )
 
 
-@register(outgoing=True, pattern=r"^\.pip(?: |$)(.*)")
+@bot.on(geezbot_cmd(outgoing=True, pattern=r"pip(?: |$)(.*)"))
 async def pipcheck(pip):
     if pip.text[0].isalpha() or pip.text[0] in ("/", "#", "@", "!"):
         return
@@ -219,22 +228,25 @@ async def pipcheck(pip):
         await pip.edit("`Use .help pip to see an example`")
 
 
-@register(outgoing=True, pattern=r"^\.(?:alive|on)\s?(.)?")
+@bot.on(geezbot_cmd(outgoing=True, pattern=r"alive$"))
 async def amireallyalive(alive):
     user = await bot.get_me()
-    uptime = await get_readable_time((time.time() - StartTime))
+    await get_readable_time((time.time() - StartTime))
     output = (
-        f"`My Detail 𝓓𝓔𝓐𝓣𝓗𝓝𝓞𝓣𝓔-𝓥𝓐𝓡𝓢!. `\n"
-        f"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"┣[ 🧭 `𝓑𝓸𝓽 𝓐𝓬𝓽𝓲𝓿𝓮     :` {uptime}\n"
-        f"┣[ 🐣 `𝓤𝓼𝓮𝓻          :` {DEFAULTUSER}\n"
-        f"┣[ 🐍 `𝓟𝔂𝓽𝓱𝓸𝓷        :` v{python_version()}\n"
-        f"┣[ ⚙️ `𝓐𝓮𝓼𝓽𝓱𝓮𝓷𝓽𝓲𝓬      :` v{version.__version__}\n"
-        f"┣[ 👁‍🗨 `𝓒𝓻𝓮𝓪𝓽𝓸𝓻 𝓑𝔂     :` @{user.username}\n"
-        f"┣[ 🦈 `𝓡𝓾𝓷 𝓐𝓬𝓽𝓲𝓿𝓮     :` {UPSTREAM_REPO_BRANCH}\n"
-        f"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"`All 𝓜𝓸𝓭𝓾𝓵𝓮𝓼 𝓛𝓸𝓪𝓭𝓲𝓷𝓰 :` {len(modules)}"
-    )
+        f"╭═──────╼═⌘═╾───────═\n"
+        f"┃⚠️ＧΞ ΞＺ - ＰＲＯＪＥＣＴ⚠️\n"
+        f"╰═─────╼══⌘══╾─────═ \n"
+        f" ❍ `Name     :` {DEFAULTUSER} \n"
+        f" ❍ `Username :` @{user.username} \n"
+        f" ❍ `Telethon :` Ver {version.__version__} \n"
+        f" ❍ `Python   :` Ver {python_version()} \n"
+        f" ❍ `Branch   :` {UPSTREAM_REPO_BRANCH} \n"
+        f" ❍ `Bot Ver  :` {BOT_VER} \n"
+        f" ❍ `Modules  :` {len(modules)} Modules \n"
+        f"╭═───────╼⌘╾───────═ \n"
+        f"┃[𝗥𝗲𝗽𝗼](https://github.com/vckyou/GeezProjects)  |  [𝗦𝘂𝗽𝗽𝗼𝗿𝘁](t.me/GeezSupportGroup)  |  "
+        f"[𝗜𝗻𝘀𝘁𝗮𝗴𝗿𝗮𝗺](https://Instagram.com/vckyouuu)\n"
+        f"╰═──────╼═⌘═╾───────═")
     if ALIVE_LOGO:
         try:
             logo = ALIVE_LOGO
@@ -255,7 +267,7 @@ async def amireallyalive(alive):
         await alive.delete()
 
 
-@register(outgoing=True, pattern=r"^\.aliveu")
+@bot.on(geezbot_cmd(outgoing=True, pattern=r"aliveu"))
 async def amireallyaliveuser(username):
     message = username.text
     output = ".aliveu [new user without brackets] nor can it be empty"
@@ -267,26 +279,29 @@ async def amireallyaliveuser(username):
     await username.edit("`" f"{output}" "`")
 
 
-@register(outgoing=True, pattern=r"^\.resetalive$")
+@bot.on(geezbot_cmd(outgoing=True, pattern=r"resetalive$"))
 async def amireallyalivereset(ureset):
     global DEFAULTUSER
     DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else uname().node
     await ureset.edit("`" "Successfully reset user for alive!" "`")
 
 
-CMD_HELP.update(
-    {
-        "sysd": ">`.sysd`"
-        "\nUsage: Shows system information using neofetch.\n\n"
-        ">`.spc`"
-        "\nUsage: Show system specification.",
-        "botver": ">`.botver`" "\nUsage: Shows the userbot version.",
-        "pip": ">`.pip <module(s)>`" "\nUsage: Does a search of pip modules(s).",
-        "alive": ">`.alive`"
-        "\nUsage: Type .alive to see wether your bot is working or not."
-        "\n\n>`.aliveu <text>`"
-        "\nUsage: Changes the 'user' in alive to the text you want."
-        "\n\n>`.resetalive`"
-        "\nUsage: Resets the user to default.",
-    }
-)
+CMD_HELP.update({
+    "system":
+    f"`{geez}sysd`\
+\nUsage: Shows system information using neofetch.\
+\n\n`{geez}botver`\
+\nUsage: Shows the userbot version.\
+\n\n`{geez}pip` <module(s)>\
+\nUsage: Does a search of pip modules(s).\
+\n\n`{geez}start`\
+\nUsage: Type .start to see whether your bot is working or not.\
+\n\n`{geez}aliveu` <text>\
+\nUsage: Changes the 'user' in alive to the text you want.\
+\n\n`{geez}resetalive`\
+\nUsage: Resets the user to default.\
+\n\n`{geez}db`\
+\nUsage:Shows database related info.\
+\n\n.`{geez}spc`\
+\nUsage:Show system specification."
+})
