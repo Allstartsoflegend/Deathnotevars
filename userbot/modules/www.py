@@ -6,13 +6,15 @@
 """ Userbot module containing commands related to the \
     Information Superhighway (yes, Internet). """
 
+import time
 from datetime import datetime
 
 from speedtest import Speedtest
-from userbot import bot, CMD_HELP, StartTime
-from userbot.events import geezbot_cmd
+
+from userbot import CMD_HELP
 from userbot import CUSTOM_CMD as geez
-import time
+from userbot import StartTime, bot
+from userbot.events import geezbot_cmd
 
 
 async def get_readable_time(seconds: int) -> str:
@@ -23,9 +25,7 @@ async def get_readable_time(seconds: int) -> str:
 
     while count < 4:
         count += 1
-        remainder, result = divmod(
-            seconds, 60) if count < 3 else divmod(
-            seconds, 24)
+        remainder, result = divmod(seconds, 60) if count < 3 else divmod(seconds, 24)
         if seconds == 0 and remainder == 0:
             break
         time_list.append(int(result))
@@ -44,7 +44,7 @@ async def get_readable_time(seconds: int) -> str:
 
 @bot.on(geezbot_cmd(outgoing=True, pattern="speed$"))
 async def speedtst(spd):
-    """ For .speed command, use SpeedTest to check server speeds. """
+    """For .speed command, use SpeedTest to check server speeds."""
     await spd.edit("`Running high speed test . . .`")
     test = Speedtest()
 
@@ -54,27 +54,29 @@ async def speedtst(spd):
     test.results.share()
     result = test.results.dict()
 
-    await spd.edit("`"
-                   "Started at "
-                   f"{result['timestamp']} \n\n"
-                   "Download "
-                   f"{speed_convert(result['download'])} \n"
-                   "Upload "
-                   f"{speed_convert(result['upload'])} \n"
-                   "Ping "
-                   f"{result['ping']} \n"
-                   "ISP "
-                   f"{result['client']['isp']}"
-                   "`")
+    await spd.edit(
+        "`"
+        "Started at "
+        f"{result['timestamp']} \n\n"
+        "Download "
+        f"{speed_convert(result['download'])} \n"
+        "Upload "
+        f"{speed_convert(result['upload'])} \n"
+        "Ping "
+        f"{result['ping']} \n"
+        "ISP "
+        f"{result['client']['isp']}"
+        "`"
+    )
 
 
 def speed_convert(size):
     """
     Hi human, you can't read bytes?
     """
-    power = 2**10
+    power = 2 ** 10
     zero = 0
-    units = {0: '', 1: 'Kb/s', 2: 'Mb/s', 3: 'Gb/s', 4: 'Tb/s'}
+    units = {0: "", 1: "Kb/s", 2: "Mb/s", 3: "Gb/s", 4: "Tb/s"}
     while size > power:
         size /= power
         zero += 1
@@ -83,18 +85,20 @@ def speed_convert(size):
 
 @bot.on(geezbot_cmd(outgoing=True, pattern="ping$"))
 async def pingme(pong):
-    """ For .ping command, ping the userbot from any chat.  """
+    """For .ping command, ping the userbot from any chat."""
     uptime = await get_readable_time((time.time() - StartTime))
     start = datetime.now()
     await pong.edit("`Pinging....`")
     end = datetime.now()
     duration = (end - start).microseconds / 1000
-    await pong.edit(f"**PONG!! 🏓**\n**Pinger** : %sms\n**Bot Uptime** : {uptime}🕛" % (duration))
+    await pong.edit(
+        f"**PONG!! 🏓**\n**Pinger** : %sms\n**Bot Uptime** : {uptime}🕛" % (duration)
+    )
 
 
 @bot.on(geezbot_cmd(outgoing=True, pattern="pong$"))
 async def pingme(pong):
-    """ For .ping command, ping the userbot from any chat.  """
+    """For .ping command, ping the userbot from any chat."""
     start = datetime.now()
     await pong.edit("`gass!`")
     end = datetime.now()
@@ -104,7 +108,7 @@ async def pingme(pong):
 
 @bot.on(geezbot_cmd(outgoing=True, pattern="pink$"))
 async def pingme(pong):
-    """ For .ping command, ping the userbot from any chat.  """
+    """For .ping command, ping the userbot from any chat."""
     start = datetime.now()
     await pong.edit("`Croots!`")
     end = datetime.now()
@@ -113,10 +117,12 @@ async def pingme(pong):
 
 
 CMD_HELP.update(
-    {"ping": f"`.{geez}ping`\
+    {
+        "ping": f"`.{geez}ping`\
     \nUsage: Shows how long it takes to ping your bot.\
     \n\n`{geez}speed`\
     \nUsage: Does a speedtest and shows the results.\
     \n\n`{geez}pong`\
     \nUsage: Shows how long it takes to ping your bot."
-     })
+    }
+)
