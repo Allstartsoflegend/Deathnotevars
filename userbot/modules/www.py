@@ -6,25 +6,26 @@
 """ Userbot module containing commands related to the \
     Information Superhighway (yes, Internet). """
 
-import time
 from datetime import datetime
 
 from speedtest import Speedtest
-
-from userbot import ALIVE_NAME, CMD_HELP, StartTime
-from userbot.events import register
-from userbot.utils import humanbytes
+from userbot import bot, CMD_HELP, StartTime
+from userbot.events import geezbot_cmd
+from userbot import CUSTOM_CMD as geez
+import time
 
 
 async def get_readable_time(seconds: int) -> str:
     count = 0
     up_time = ""
     time_list = []
-    time_suffix_list = ["s", "m", "Jam", "Hari"]
+    time_suffix_list = ["s", "m", "h", "days"]
 
     while count < 4:
         count += 1
-        remainder, result = divmod(seconds, 60) if count < 3 else divmod(seconds, 24)
+        remainder, result = divmod(
+            seconds, 60) if count < 3 else divmod(
+            seconds, 24)
         if seconds == 0 and remainder == 0:
             break
         time_list.append(int(result))
@@ -41,184 +42,81 @@ async def get_readable_time(seconds: int) -> str:
     return up_time
 
 
-@register(outgoing=True, pattern=r"^\.ping$")
-async def pingme(pong):
-    """For .ping command, ping the userbot from any chat."""
-    uptime = await get_readable_time((time.time() - StartTime))
-    start = datetime.now()
-    await pong.edit("**✣**")
-    await pong.edit("**✣✣**")
-    await pong.edit("**✣✣✣**")
-    await pong.edit("**✣✣✣✣**")
-    end = datetime.now()
-    duration = (end - start).microseconds / 1000
-    await pong.edit(
-        f"**PONG!!🏓**\n"
-        f"✣ **Pinger** - `%sms`\n"
-        f"✣ **Uptime -** `{uptime}` \n"
-        f"**✦҈͜͡Owner :** `{ALIVE_NAME}`" % (duration)
-    )
-
-
-@register(outgoing=True, pattern=r"^\.xping$")
-async def pingme(pong):
-    """For .ping command, ping the userbot from any chat."""
-    uptime = await get_readable_time((time.time() - StartTime))
-    start = datetime.now()
-    await pong.edit("`Pinging....`")
-    end = datetime.now()
-    duration = (end - start).microseconds / 1000
-    await pong.edit(
-        f"**PONG!! 🍭**\n**Pinger** : %sms\n**Bot Uptime** : {uptime}🕛" % (duration)
-    )
-
-
-@register(outgoing=True, pattern=r"^\.lping$")
-async def pingme(pong):
-    """For .ping command, ping the userbot from any chat."""
-    uptime = await get_readable_time((time.time() - StartTime))
-    start = datetime.now()
-    await pong.edit("**★ PING ★**")
-    await pong.edit("**★★ PING ★★**")
-    await pong.edit("**★★★ PING ★★★**")
-    await pong.edit("**★★★★ PING ★★★★**")
-    await pong.edit("**✦҈͜͡➳ PONG!**")
-    end = datetime.now()
-    duration = (end - start).microseconds / 1000
-    await pong.edit(
-        f"❃ **Ping !!** "
-        f"`%sms` \n"
-        f"❃ **Uptime -** "
-        f"`{uptime}` \n"
-        f"**✦҈͜͡➳ Master :** `{ALIVE_NAME}`" % (duration)
-    )
-
-
-@register(outgoing=True, pattern=r"^\.fping$")
-async def pingme(pong):
-    """For .ping command, ping the userbot from any chat."""
-    await get_readable_time((time.time() - StartTime))
-    start = datetime.now()
-    await pong.edit(".                       /¯ )")
-    await pong.edit(".                       /¯ )\n                      /¯  /")
-    await pong.edit(
-        ".                       /¯ )\n                      /¯  /\n                    /    /"
-    )
-    await pong.edit(
-        ".                       /¯ )\n                      /¯  /\n                    /    /\n              /´¯/'   '/´¯¯`•¸"
-    )
-    await pong.edit(
-        ".                       /¯ )\n                      /¯  /\n                    /    /\n              /´¯/'   '/´¯¯`•¸\n          /'/   /    /       /¨¯\\ "
-    )
-    await pong.edit(
-        ".                       /¯ )\n                      /¯  /\n                    /    /\n              /´¯/'   '/´¯¯`•¸\n          /'/   /    /       /¨¯\\ \n        ('(   (   (   (  ¯~/'  ')"
-    )
-    await pong.edit(
-        ".                       /¯ )\n                      /¯  /\n                    /    /\n              /´¯/'   '/´¯¯`•¸\n          /'/   /    /       /¨¯\\ \n        ('(   (   (   (  ¯~/'  ')\n         \\                        /"
-    )
-    await pong.edit(
-        ".                       /¯ )\n                      /¯  /\n                    /    /\n              /´¯/'   '/´¯¯`•¸\n          /'/   /    /       /¨¯\\ \n        ('(   (   (   (  ¯~/'  ')\n         \\                        /\n          \\                _.•´"
-    )
-    await pong.edit(
-        ".                       /¯ )\n                      /¯  /\n                    /    /\n              /´¯/'   '/´¯¯`•¸\n          /'/   /    /       /¨¯\\ \n        ('(   (   (   (  ¯~/'  ')\n         \\                        /\n          \\                _.•´\n            \\              ("
-    )
-    await pong.edit(
-        ".                       /¯ )\n                      /¯  /\n                    /    /\n              /´¯/'   '/´¯¯`•¸\n          /'/   /    /       /¨¯\\ \n        ('(   (   (   (  ¯~/'  ')\n         \\                        /\n          \\                _.•´\n            \\              (\n              \\  "
-    )
-    end = datetime.now()
-    duration = (end - start).microseconds / 1000
-    await pong.edit(
-        f"**PONG!!🏓**\n"
-        f"✣ **Pinger** - `%sms`\n"
-        f"✣ **Uptime -** `{uptime}` \n"
-        f"**✦҈͜͡Owner :** `{ALIVE_NAME}`" % (duration)
-    )
-
-
-@register(outgoing=True, pattern=r"^\.speedtest$")
+@bot.on(geezbot_cmd(outgoing=True, pattern="speed$"))
 async def speedtst(spd):
-    """For .speedtest command, use SpeedTest to check server speeds."""
-    await spd.edit("`Running speed test...`")
-
+    """ For .speed command, use SpeedTest to check server speeds. """
+    await spd.edit("`Running high speed test . . .`")
     test = Speedtest()
+
     test.get_best_server()
     test.download()
     test.upload()
     test.results.share()
     result = test.results.dict()
 
-    msg = (
-        f"**Started at {result['timestamp']}**\n\n"
-        "**Client**\n"
-        f"**ISP :** `{result['client']['isp']}`\n"
-        f"**Country :** `{result['client']['country']}`\n\n"
-        "**Server**\n"
-        f"**Name :** `{result['server']['name']}`\n"
-        f"**Country :** `{result['server']['country']}`\n"
-        f"**Sponsor :** `{result['server']['sponsor']}`\n\n"
-        f"**Ping :** `{result['ping']}`\n"
-        f"**Upload :** `{humanbytes(result['upload'])}/s`\n"
-        f"**Download :** `{humanbytes(result['download'])}/s`"
-    )
-
-    await spd.delete()
-    await spd.client.send_file(
-        spd.chat_id,
-        result["share"],
-        caption=msg,
-        force_document=False,
-    )
+    await spd.edit("`"
+                   "Started at "
+                   f"{result['timestamp']} \n\n"
+                   "Download "
+                   f"{speed_convert(result['download'])} \n"
+                   "Upload "
+                   f"{speed_convert(result['upload'])} \n"
+                   "Ping "
+                   f"{result['ping']} \n"
+                   "ISP "
+                   f"{result['client']['isp']}"
+                   "`")
 
 
-@register(outgoing=True, pattern=r"^\.pong$")
+def speed_convert(size):
+    """
+    Hi human, you can't read bytes?
+    """
+    power = 2**10
+    zero = 0
+    units = {0: '', 1: 'Kb/s', 2: 'Mb/s', 3: 'Gb/s', 4: 'Tb/s'}
+    while size > power:
+        size /= power
+        zero += 1
+    return f"{round(size, 2)} {units[zero]}"
+
+
+@bot.on(geezbot_cmd(outgoing=True, pattern="ping$"))
 async def pingme(pong):
-    """For .ping command, ping the userbot from any chat."""
+    """ For .ping command, ping the userbot from any chat.  """
+    uptime = await get_readable_time((time.time() - StartTime))
     start = datetime.now()
-    await pong.edit("`Sepong.....🏓`")
+    await pong.edit("`Pinging....`")
+    end = datetime.now()
+    duration = (end - start).microseconds / 1000
+    await pong.edit(f"**PONG!! 🏓**\n**Pinger** : %sms\n**Bot Uptime** : {uptime}🕛" % (duration))
+
+
+@bot.on(geezbot_cmd(outgoing=True, pattern="pong$"))
+async def pingme(pong):
+    """ For .ping command, ping the userbot from any chat.  """
+    start = datetime.now()
+    await pong.edit("`gass!`")
     end = datetime.now()
     duration = (end - start).microseconds / 9000
-    await pong.edit("🏓 **Ping!**\n`%sms`" % (duration))
+    await pong.edit("`Ping!\n%sms`" % (duration))
 
 
-@register(outgoing=True, pattern=r"^\.usange(?: |$)(.*)")
-async def typewriter(typew):
-    typew.pattern_match.group(1)
-    sleep(1)
-    await typew.edit("`Getting Information...`")
-    sleep(1)
-    await typew.edit(
-        "**Informasi Dyno Usage ★**:\n\n╭━━━━━━━━━━━━━━━━━━━━╮\n"
-        f"-> `Penggunaan Dyno` **{ALIVE_NAME}**:\n"
-        f" ❉ **10 Jam - "
-        f"51 Menit - 0%**"
-        "\n ◐━─━─━─━─━──━─━─━─━─━◐\n"
-        "-> `Sisa Dyno Bulan Ini`:\n"
-        f" ❉ **9989 Jam - 9948 Menit "
-        f"- 99%**\n"
-        "╰━━━━━━━━━━━━━━━━━━━━╯"
-    )
-
-
-# @mixiologist
+@bot.on(geezbot_cmd(outgoing=True, pattern="pink$"))
+async def pingme(pong):
+    """ For .ping command, ping the userbot from any chat.  """
+    start = datetime.now()
+    await pong.edit("`Croots!`")
+    end = datetime.now()
+    duration = (end - start).microseconds / 9000
+    await pong.edit("**CROOTSS!\n%sms**" % (duration))
 
 
 CMD_HELP.update(
-    {
-        "ping": "**Plugin : **`ping`\
-        \n\n  •  **Syntax :** `.ping` ; `.lping` ; `.xping` ; `.kping` ; `.fping`\
-        \n  •  **Function : **Untuk menunjukkan ping userbot.\
-        \n\n  •  **Syntax :** `.pong`\
-        \n  •  **Function : **Sama seperti perintah ping\
-    "
-    }
-)
-
-
-CMD_HELP.update(
-    {
-        "speedtest": "**Plugin : **`speedtest`\
-        \n\n  •  **Syntax :** `.speedtest`\
-        \n  •  **Function : **Untuk Mengetes kecepatan server userbot.\
-    "
-    }
-)
+    {"ping": f"`.{geez}ping`\
+    \nUsage: Shows how long it takes to ping your bot.\
+    \n\n`{geez}speed`\
+    \nUsage: Does a speedtest and shows the results.\
+    \n\n`{geez}pong`\
+    \nUsage: Shows how long it takes to ping your bot."
+     })
